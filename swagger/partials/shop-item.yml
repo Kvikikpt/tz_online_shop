@@ -1,0 +1,31 @@
+title: ShopItemPartial
+additionalProperties: false
+properties:
+  id:
+    description: Identificer
+    type: number
+  name:
+    description: Name
+    type: string
+  price:
+    title: Price
+    type: number
+  weight:
+    title: Weight
+    type: number
+  startDate:
+    title: Starting date for shop item
+    format: date-time
+    type: string
+  endDate:
+    title: Ending date for shop item
+    format: date-time
+    type: string
+required:
+  - id
+  - name
+  - price
+  - weight
+  - startDate
+  - endDate
+type: object

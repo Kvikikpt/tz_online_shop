@@ -1,0 +1,10 @@
+title: TokenPartial
+type: object
+properties:
+  token:
+    title: User token
+    description: Token that will exists for 5 mins
+    type: string
+required:
+  - token
+additionalProperties: false

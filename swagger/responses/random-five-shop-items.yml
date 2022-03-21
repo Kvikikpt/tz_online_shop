@@ -1,0 +1,4 @@
+title: RandomFiveShopItemsResponse
+items:
+  $ref: '../partials/shop-item.yml'
+type: array

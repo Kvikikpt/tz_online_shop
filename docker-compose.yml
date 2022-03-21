@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "3001:3001"
+    container_name: online-shop-app
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run install-build-start
+    environment:
+      ENVIRONMENT: local
+
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:latest
+    hostname: ${DB_HOST}
+    container_name: tz-db
+    environment:
+      POSTGRES_DB: ${DB}
+      POSTGRES_USER: ${DB_ADMIN_USER}
+      POSTGRES_PASSWORD: ${DB_ADMIN_PASS}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: swagger_ui_container
+    ports:
+      - "80:8080"
+    volumes:
+      - ./swagger:/usr/share/nginx/html/swagger
+    environment:
+      API_URL: swagger/api.yml
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"

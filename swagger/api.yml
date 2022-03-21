@@ -1,0 +1,140 @@
+openapi: '3.0.3'
+
+info:
+  title: Test online shop api
+  description: API methods for tz online shop
+  version: 'v1'
+
+security:
+  - bearerAuth: []
+
+servers:
+  - url: 'http://localhost:{port}/{basePath}'
+    description: Local server
+    variables:
+      port:
+        default: '3001'
+      basePath:
+        default: 'api'
+
+paths:
+  /shop_items/get_random_five:
+    get:
+      tags:
+        - Items
+      summary: List of 5 random shop items
+      operationId: getRandomFiveShopItems
+      parameters:
+        - name: token
+          in: header
+          description: an authorization token
+          required: true
+          type: string
+      responses:
+        200:
+          description: Randonly selected 5 shop items
+          content:
+            application/json:
+              schema:
+                $ref: './responses/random-five-shop-items.yml'
+        401:
+          description: Authorisation error
+          content:
+            application/json:
+              schema:
+                $ref: './responses/unauthorized.yml'
+
+  /admin/shop_items/create:
+    put:
+      tags:
+        - Items
+      summary: Create shop item
+      operationId: CreateShopItem
+      parameters:
+        - name: token
+          in: header
+          description: an authorization token
+          required: true
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './partials/shop-item-without-id.yml'
+      responses:
+        204:
+          description: Done
+        401:
+          description: Authorisation error
+          content:
+            application/json:
+              schema:
+                $ref: './responses/unauthorized.yml'
+
+
+  /admin/shop_items/create_many:
+    put:
+      tags:
+        - Items
+      summary: Create many shop items
+      operationId: CreateManyShopItems
+      parameters:
+        - name: token
+          in: header
+          description: an authorization token
+          required: true
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: './partials/shop-item-without-id.yml'
+      responses:
+        204:
+          description: Done
+        401:
+          description: Authorisation error
+          content:
+            application/json:
+              schema:
+                $ref: './responses/unauthorized.yml'
+
+  /auth:
+    post:
+      tags:
+        - Authorisation
+      summary: Login to the server
+      operationId: Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './partials/name-password.yml'
+      responses:
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  $ref: './partials/token.yml'
+
+  /auth/create_user:
+    post:
+      tags:
+        - Authorisation
+      summary: Create user
+      operationId: CreateUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './partials/name-password.yml'
+      responses:
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  $ref: './partials/token.yml'
