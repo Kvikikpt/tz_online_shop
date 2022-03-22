@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AuthService encryptUserPassword successfully encrypts user password 1`] = `"2ca1e19ffe9217b12929"`;
+exports[`AuthService encryptUserPassword successfully encrypts user password 1`] = `"6682ddf49a53a7011ce7"`;
 
 exports[`AuthService getUserByToken gets user from token successfully 1`] = `
 Object {
@@ -8,6 +8,7 @@ Object {
   "id": 1,
   "isAdmin": false,
   "name": "asd",
-  "password": "password",
+  "password": "999831345adba09d7c5d",
+  "salt": "somenanoid",
 }
 `;

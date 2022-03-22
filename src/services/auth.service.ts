@@ -9,6 +9,7 @@ import { HttpStatusCode } from '../types';
 import { Logger } from 'winston';
 import { LoggerFactory } from '../logger';
 import * as crypto from 'crypto';
+import { nanoid } from 'nanoid';
 
 @provideSingleton(TYPES.AuthService)
 export class AuthService {
@@ -27,16 +28,16 @@ export class AuthService {
     });
   }
 
-  private static encryptUserPassword(password: string): string {
-    return crypto
-      .pbkdf2Sync(password, process.env.SALT ?? 'salt', 666, 10, 'sha512')
-      .toString('hex');
+  private static encryptUserPassword(password: string, salt: string): string {
+    return crypto.pbkdf2Sync(password, salt, 666, 10, 'sha512').toString('hex');
   }
 
   async createUserAndGetToken(user: Pick<IUserEntity, 'password' | 'name' | 'isAdmin'>) {
+    const salt = nanoid();
     const createdUser = await this.userRepository.createNewUser({
       ...user,
-      password: AuthService.encryptUserPassword(user.password),
+      password: AuthService.encryptUserPassword(user.password, salt),
+      salt,
     });
     this.logger.info('Created new user', {
       username: user.name,
@@ -46,7 +47,6 @@ export class AuthService {
 
   async getTokenByPassportAndName(password: string, name: string) {
     const foundUser = await this.userRepository.getUserByPasswordAndUsername({
-      password: AuthService.encryptUserPassword(password),
       name,
     });
 
@@ -54,7 +54,16 @@ export class AuthService {
       this.logger.error('User not found', {
         username: name,
       });
-      throw new HttpError('User is not found', HttpStatusCode.NotFound);
+      throw new HttpError('Authorisation failed', HttpStatusCode.Forbidden);
+    }
+
+    if (
+      AuthService.encryptUserPassword(password, foundUser.salt) !== foundUser.password
+    ) {
+      this.logger.error('User has wrong password', {
+        username: name,
+      });
+      throw new HttpError('Authorisation failed', HttpStatusCode.Forbidden);
     }
 
     return AuthService.generateUserToken(foundUser);

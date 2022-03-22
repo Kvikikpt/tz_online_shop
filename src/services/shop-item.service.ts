@@ -37,11 +37,11 @@ export class ShopItemService {
     });
   }
 
-  async getAllShopItems(): Promise<IShopItemEntity[]> {
+  private async getAllShopItems(): Promise<IShopItemEntity[]> {
     return this.shopItemRepository.getActiveAllShopItems();
   }
 
-  async getRandomShopItems(amount: number): Promise<IShopItemEntity[]> {
+  private async getRandomShopItems(amount: number): Promise<IShopItemEntity[]> {
     const shopItems = await this.getAllShopItems();
 
     return shopItems

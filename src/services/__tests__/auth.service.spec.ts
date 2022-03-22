@@ -28,7 +28,7 @@ describe('AuthService', () => {
       process.env.SALT = 'test_salt';
       expect(
         // @ts-ignore
-        AuthService.encryptUserPassword('somepassword')
+        AuthService.encryptUserPassword('somepassword', 'somenanoid')
       ).toMatchSnapshot();
     });
   });
@@ -82,7 +82,19 @@ describe('AuthService', () => {
       getUserByPasswordAndUsername.mockResolvedValueOnce(undefined);
       await expect(
         service.getTokenByPassportAndName('somepass', 'somename')
-      ).rejects.toThrowError(new HttpError('User is not found', HttpStatusCode.NotFound));
+      ).rejects.toThrowError(
+        new HttpError('Authorisation failed', HttpStatusCode.NotFound)
+      );
+      expect(getUserByPasswordAndUsername).toBeCalled();
+    });
+
+    it('if user is found, but password is wrong, throws error', async () => {
+      getUserByPasswordAndUsername.mockResolvedValueOnce(UserFixture);
+      await expect(
+        service.getTokenByPassportAndName('somewrongpass', 'somename')
+      ).rejects.toThrowError(
+        new HttpError('Authorisation failed', HttpStatusCode.NotFound)
+      );
       expect(getUserByPasswordAndUsername).toBeCalled();
     });
   });

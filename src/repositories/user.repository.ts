@@ -12,13 +12,13 @@ export class UserRepository extends BaseRepository<UserEntity> {
   }
 
   public async createNewUser(
-    user: Pick<IUserEntity, 'password' | 'isAdmin' | 'name'>
+    user: Pick<IUserEntity, 'password' | 'isAdmin' | 'name' | 'salt'>
   ): Promise<IUserEntity> {
     return this.getRepository().save(user);
   }
 
   public async getUserByPasswordAndUsername(
-    filters: Pick<IUserEntity, 'password' | 'name'>
+    filters: Pick<IUserEntity, 'name'>
   ): Promise<IUserEntity | undefined> {
     return this.getRepository().findOne(filters);
   }

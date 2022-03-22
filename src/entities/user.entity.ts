@@ -6,6 +6,7 @@ export interface IUserEntity {
   password: string;
   isAdmin: boolean;
   createdAt: Date;
+  salt: string;
 }
 
 @Entity()
@@ -43,4 +44,12 @@ export class UserEntity implements IUserEntity {
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
   createdAt!: Date;
+
+  @Column({
+    name: 'salt',
+    type: 'character varying',
+    length: 21,
+    nullable: false,
+  })
+  salt!: string;
 }
